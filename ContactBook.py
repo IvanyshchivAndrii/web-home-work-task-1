@@ -2,6 +2,7 @@ import re
 import datetime
 from colorama import Fore, Style, init
 import json
+from abc import ABC, abstractmethod
 
 init(autoreset=True)
 
@@ -19,7 +20,15 @@ def load_contacts_from_file():
         return []
 
 
+class View(ABC):
+
+    @abstractmethod
+    def show_info(self):
+        pass
+
+
 class ContactBook:
+
     def __init__(self):
         self.contacts = []
 
@@ -114,27 +123,47 @@ class ContactBook:
                 # birthday = datetime.datetime.strptime(contact['birthday'], '%Y-%m-%d').date()
                 # days_until_bday = self.days_until_birthday(birthday)
 
-                return self.contacts[index] #, "days_until_birthday": days_until_bday}
+                return self.contacts[index]  # , "days_until_birthday": days_until_bday}
         return None
 
+    class SelfView(View):
+        def __init__(self, contacts: list):
+            self.contacts = contacts
+
+        def show_info(self):
+            if not self.contacts:
+                return Fore.YELLOW + 'No contacts found.\n'
+
+            for contact in self.contacts:
+                print(Fore.YELLOW + f'Name: {contact["name"]}')
+                print(f'Phone: {contact["number"]}')
+                print(f'Email: {contact["email"]}')
+                print(f'Address: {contact["address"]}')
+                print(f'Birthday: {contact["birthday"]}')
+                print(f'Days until birthday: {contact["days until birthday"]}\n')
+
+            return ''
+
+
     def show_all_contacts(self):
-        if not self.contacts:
-            return Fore.YELLOW + 'No contacts found.\n'
 
-        today = datetime.date.today()
+        display = self.SelfView(self.contacts)
+        display.show_info()
 
-        for contact in self.contacts:
-            #birthday = datetime.datetime.strptime(contact['birthday'], '%Y-%m-%d').date()
-            #days_until_bday = self.days_until_birthday(birthday)
-
-            print(Fore.YELLOW + f'Name: {contact["name"]}')
-            print(f'Phone: {contact["number"]}')
-            print(f'Email: {contact["email"]}')
-            print(f'Address: {contact["address"]}')
-            print(f'Birthday: {contact["birthday"]}')
-            print(f'Days until birthday: {contact["days until birthday"]}\n')
-
-        return ''
+        # if not self.contacts:
+        #     return Fore.YELLOW + 'No contacts found.\n'
+        #
+        # today = datetime.date.today()
+        #
+        # for contact in self.contacts:
+        #     print(Fore.YELLOW + f'Name: {contact["name"]}')
+        #     print(f'Phone: {contact["number"]}')
+        #     print(f'Email: {contact["email"]}')
+        #     print(f'Address: {contact["address"]}')
+        #     print(f'Birthday: {contact["birthday"]}')
+        #     print(f'Days until birthday: {contact["days until birthday"]}\n')
+        #
+        # return ''
 
     def days_until_birthday(self, birthday):
         today = datetime.date.today()
@@ -152,8 +181,6 @@ class ContactBook:
         upcoming_contact = None
 
         for contact in self.contacts:
-            # birthday = datetime.datetime.strptime(contact['birthday'], '%Y-%m-%d').date()
-            # days_until_bday = self.days_until_birthday(birthday)
 
             if float(contact["days until birthday"].split()[0]) < min_days_until_birthday:
                 min_days_until_birthday = float(contact["days until birthday"].split()[0])
@@ -165,8 +192,7 @@ class ContactBook:
             return Fore.YELLOW + 'No upcoming birthdays found.\n'
 
     def main(self):
-        self.contacts = load_contacts_from_file() #ContactBook()
-        #json.load('contacts.json') #contact_book.contacts = load_contacts_from_file()
+        self.contacts = load_contacts_from_file()  # ContactBook()
         while True:
             print(Fore.BLUE + 'Choose an option:')
             print('1. Додати контакт')
@@ -199,4 +225,3 @@ class ContactBook:
 if __name__ == '__main__':
     contact_book = ContactBook()
     contact_book.main()
-
