@@ -169,11 +169,11 @@ class ContactBook:
         #json.load('contacts.json') #contact_book.contacts = load_contacts_from_file()
         while True:
             print(Fore.BLUE + 'Choose an option:')
-            print('1. Add contact')
-            print('2. Change contact')
-            print('3. Delete contact')
-            print('4. Show all contacts')
-            print('5. Upcoming birthday contact')
+            print('1. Додати контакт')
+            print('2. Змінити контакт')
+            print('3. Видалити контакт')
+            print('4. Показати всі контакти')
+            print('5. Найближчі дні народження')
             print('6. Exit\n')
 
             choice = input(Fore.BLUE + 'Enter your choice (1/2/3/4/5/6): ' + Style.RESET_ALL)
